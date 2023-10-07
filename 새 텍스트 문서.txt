@@ -1,0 +1,10 @@
+
+pip install flask
+
+pip install flask_cors
+
+pip isntall flask_restful
+
+pip install requests
+
+pip install beautifulsoup4
