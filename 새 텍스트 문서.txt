@@ -8,3 +8,11 @@ pip isntall flask_restful
 pip install requests
 
 pip install beautifulsoup4
+
+----------------------------------------------
+
+백그라운드 실행 : nohup python3 app.py &
+
+프로세스 아이디 (PID) : ps -ef | grep app.py
+
+프로세스 종료 : kill PID
