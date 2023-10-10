@@ -79,7 +79,6 @@ def server_responses():
         return { 'message': True }, 200
     
     except Exception as e:
-        print(e)
         return { 'message': False, 'error': str(e) }, 500
 
 @app.route("/keywdcheck", methods=["POST"])

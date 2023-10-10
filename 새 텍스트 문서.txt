@@ -16,3 +16,5 @@ pip install beautifulsoup4
 프로세스 아이디 (PID) : ps -ef | grep app.py
 
 프로세스 종료 : kill PID
+
+putty 터미널 종료 : exit
