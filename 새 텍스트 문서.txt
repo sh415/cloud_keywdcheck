@@ -1,15 +1,23 @@
 
-pip install flask
+sudo apt-get install git 
 
-pip install flask_cors
-
-pip isntall flask_restful
-
-pip install requests
-
-pip install beautifulsoup4
+sudo apt-get install python3-pip
 
 ----------------------------------------------
+
+pip3 install flask
+
+pip3 install flask_cors
+
+pip3 isntall flask_restful
+
+pip3 install requests
+
+pip3 install beautifulsoup4
+
+----------------------------------------------
+
+공인ip 포트포워딩 : 네이버 클라우드 플랫폼 > ACG 설정 추가
 
 백그라운드 실행 : nohup python3 app.py &
 
