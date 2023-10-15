@@ -117,7 +117,7 @@ def keywdcheck():
         keywd = f'{col}+{row}'
         posts1 = scrap_keywdcheck(keywd)
 
-        # time.sleep(uniform(0.5, 1.0))
+        time.sleep(uniform(0.5, 1.0))
 
         keywd = f'{col}{row}'
         posts2 = scrap_keywdcheck(keywd)
