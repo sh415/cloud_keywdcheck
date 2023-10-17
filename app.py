@@ -144,7 +144,7 @@ def keywdcheck():
             service = Service(executable_path=r'/chromedriver-win64/chromedriver')
             driver = webdriver.Chrome(service=service, options=options)
         elif (operaitor == 'Linux'):
-            service = Service(executable_path=r'/chromedriver-linux64/chromedriver.exe')
+            service = Service(executable_path=r'/chromedriver-linux64/chromedriver')
             driver = webdriver.Chrome(service=service, options=options)
 
         col = request.json.get('col')
