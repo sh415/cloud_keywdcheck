@@ -13,6 +13,12 @@ sudo apt install ./google-chrome-stable_current_amd64.deb
 
 크롬 드라이버 : https://googlechromelabs.github.io/chrome-for-testing/#stable
 
+sudo wget https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/118.0.5993.70/linux64/chromedriver-linux64.zip
+
+sudo unzip chromedriver_linux64.zip
+
+sudo mv chromedriver /usr/bin/chromedriver
+
 ----------------------------------------------
 
 sudo apt-get install git
