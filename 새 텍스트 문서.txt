@@ -11,11 +11,17 @@ sudo apt install ./google-chrome-stable_current_amd64.deb
 
 버전 확인 : google-chrome --version
 
+----------------------------------------------
+
 크롬 드라이버 : https://googlechromelabs.github.io/chrome-for-testing/#stable
+
+cd .. 상위 경로로 이동
 
 sudo wget https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/118.0.5993.70/linux64/chromedriver-linux64.zip
 
 sudo unzip chromedriver_linux64.zip
+
+cd  chromedriver_linux64
 
 sudo mv chromedriver /usr/bin/chromedriver
 
@@ -24,6 +30,8 @@ sudo mv chromedriver /usr/bin/chromedriver
 sudo apt-get install git
 
 git clone https://github.com/sh415/cloud_keywdcheck.git
+
+git pull https://github.com/sh415/cloud_keywdcheck.git
 
 sudo apt-get install python3-pip
 
