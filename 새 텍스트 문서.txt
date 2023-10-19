@@ -19,9 +19,9 @@ cd .. 상위 경로로 이동
 
 sudo wget https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/118.0.5993.70/linux64/chromedriver-linux64.zip
 
-sudo unzip chromedriver-linux64.zip
+sudo unzip chromedriver_linux64.zip
 
-cd chromedriver-linux64
+cd  chromedriver_linux64
 
 sudo mv chromedriver /usr/bin/chromedriver
 
@@ -51,7 +51,11 @@ pip3 install flasgger
 
 pip3 install selenium
 
+pip install webdriver-manager
+
 ----------------------------------------------
+
+cd cloud_keywdcheck
 
 백그라운드 실행 : nohup python3 app.py &
 

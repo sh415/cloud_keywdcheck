@@ -14,6 +14,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import WebDriverException
+from webdriver_manager.chrome import ChromeDriverManager
 
 app = Flask(__name__)
 api = Api(app)
@@ -63,9 +64,9 @@ def scrap_keywdcheck_v2(driver, keywd):
         driver.get(f'https://m.search.naver.com/search.naver?sm=mtp_hty.top&where=m&query={keywd}')
         time.sleep(uniform(1.0, 2.0))
 
-        list = driver.find_element(By.CSS_SELECTOR, '._svp_list')
+        list = driver.find_element(By.CSS_SELECTOR, '.lst_view')
         posts = []
-        for post in list.find_elements(By.CSS_SELECTOR, '.api_txt_lines.total_tit'):
+        for post in list.find_elements(By.CSS_SELECTOR, '.title_link'):
             href = post.get_attribute('href')
             posts.append({'href': href})
         
@@ -144,11 +145,8 @@ def keywdcheck():
         # options.add_experimental_option('excludeSwitches', ['enable-logging'])
         operaitor = platform.system()
         if (operaitor == 'Windows'):
-            service = Service(executable_path=r'/chromedriver-win64/chromedriver')
-            driver = webdriver.Chrome(service=service, options=options)
+            driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
         elif (operaitor == 'Linux'):
-            # service = Service(executable_path=r'/chromedriver-linux64/chromedriver')
-            # driver = webdriver.Chrome(service=service, options=options)
             driver = webdriver.Chrome(options=options)
 
         col = request.json.get('col')
