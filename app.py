@@ -38,25 +38,45 @@ swagger_config = {
 }
 swagger = Swagger(app, config=swagger_config)
 
-def scrap_keywdcheck(keywd):
-    try:
-        url = f'https://m.search.naver.com/search.naver?sm=mtp_hty.top&where=m&query={keywd}'
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36 Edg/118.0.2088.46'
-        }
-        response = requests.get(url, headers=headers)
-        soup = BeautifulSoup(response.text, 'html.parser')
+# def scrap_keywdcheck(keywd):
+#     try:
+#         url = f'https://m.search.naver.com/search.naver?sm=mtp_hty.top&where=m&query={keywd}'
+#         headers = {
+#             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36 Edg/118.0.2088.46'
+#         }
+#         response = requests.get(url, headers=headers)
+#         soup = BeautifulSoup(response.text, 'html.parser')
 
-        svp = soup.select_one('._svp_list')
-        posts = []
-        for post in svp.select('.api_txt_lines.total_tit'):
-            href = post.get('href')
-            posts.append({'href': href})
+#         svp = soup.select_one('._svp_list')
+#         posts = []
+#         for post in svp.select('.api_txt_lines.total_tit'):
+#             href = post.get('href')
+#             posts.append({'href': href})
         
-        return posts
+#         return posts
+
+#     except Exception as e:
+#         print('scrap_keywdcheck error', e)
+#         return False
+
+def driverInit():
+    try:
+        options = webdriver.ChromeOptions()
+        options.add_argument('headless')
+        options.add_argument("no-sandbox")
+        # options.add_argument('window-size=1920x1080')
+        # options.add_argument("disable-gpu")
+        # options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        operaitor = platform.system()
+        if (operaitor == 'Windows'):
+            driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+        elif (operaitor == 'Linux'):
+            driver = webdriver.Chrome(options=options)
+
+        return driver
 
     except Exception as e:
-        print('scrap_keywdcheck error', e)
+        print('driverInit error', e)
         return False
 
 def scrap_keywdcheck_v2(driver, keywd):
@@ -74,6 +94,14 @@ def scrap_keywdcheck_v2(driver, keywd):
 
     except Exception as e:
         print('scrap_keywdcheck error', e)
+        return []
+
+def driverQuit(driver):
+    try:
+        driver.quit()
+        return True
+    except Exception as e:
+        print('driverQuit error', e)
         return False
 
 @app.route('/')
@@ -137,17 +165,10 @@ def server_responses():
 })
 def keywdcheck():
     try:
-        options = webdriver.ChromeOptions()
-        options.add_argument('headless')
-        options.add_argument("no-sandbox")
-        # options.add_argument('window-size=1920x1080')
-        # options.add_argument("disable-gpu")
-        # options.add_experimental_option('excludeSwitches', ['enable-logging'])
-        operaitor = platform.system()
-        if (operaitor == 'Windows'):
-            driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-        elif (operaitor == 'Linux'):
-            driver = webdriver.Chrome(options=options)
+        driver = driverInit()
+
+        if (driver == False):
+            return { 'message': False, 'error': 'driverInit error', 'code': 1 }, 500
 
         col = request.json.get('col')
         row = request.json.get('row')
@@ -155,16 +176,24 @@ def keywdcheck():
         keywd = f'{col}+{row}'
         posts1 = scrap_keywdcheck_v2(driver, keywd)
 
+        # time.sleep(uniform(1.0, 2.0))
+
         keywd = f'{col}{row}'
         posts2 = scrap_keywdcheck_v2(driver, keywd)
         marge_posts = posts1 + posts2
 
-        driver.quit()
+        quit = driverQuit(driver)
 
-        return { 'message': True, 'posts': marge_posts }, 200
+        if (quit == False):
+             return { 'message': False, 'error': 'driverQuit error', 'code': 2 }, 500
+    
+        if (len(marge_posts) == 0):
+            return { 'message': True, 'posts': marge_posts, 'code': 3 }, 200
+        else:
+            return { 'message': True, 'posts': marge_posts, 'code': 4 }, 200
 
     except Exception as e:
-        return { 'message': False, 'error': str(e) }, 500
+        return { 'message': False, 'error': 'Exception error', 'code': 5 }, 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=False)
