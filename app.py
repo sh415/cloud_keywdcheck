@@ -84,17 +84,34 @@ def scrap_keywdcheck_v2(driver, keywd):
         driver.get(f'https://m.search.naver.com/search.naver?sm=mtp_hty.top&where=m&query={keywd}')
         time.sleep(uniform(1.0, 2.0))
 
-        list = driver.find_element(By.CSS_SELECTOR, '.lst_view')
         posts = []
-        for post in list.find_elements(By.CSS_SELECTOR, '.title_link'):
-            href = post.get_attribute('href')
-            posts.append({'href': href})
 
-        # 스마트플레이스 수집 코드 추가.
-        smarts = driver.find_elements(By.CSS_SELECTOR, '.fds-ugc-block-mod')
-        for smart in smarts:
-            href = smart.get_attribute('href')
-            posts.append({'href': href})
+        # VIEW 영역 수집
+        try:
+            list = driver.find_element(By.CSS_SELECTOR, '.lst_view')
+            for post in list.find_elements(By.CSS_SELECTOR, '.title_link'):
+                href = post.get_attribute('href')
+                posts.append({'href': href})
+
+        except Exception as e:
+            print('VIEW 영역 수집 실패', e)
+
+        # 스마트블록 영역 수집
+        if (len(posts) == 0):
+            print('스마트블록 영역을 탐색한다.')
+
+            try:
+                smart_blocks = driver.find_elements(By.CSS_SELECTOR, '.fds-ugc-block-mod')
+                for smart_block in smart_blocks:
+                    try:
+                        smart_place = smart_block.find_element(By.CSS_SELECTOR, '.fds-comps-right-image-text-title-wrap')
+                        href = smart_place.get_attribute('href')
+                        posts.append({'href': href})
+                    except Exception as e:
+                        None
+
+            except Exception as e:
+                print('스마트블록 영역 수집 실패', e)
         
         return posts
 
@@ -148,7 +165,7 @@ def server_responses():
     'parameters': [
         {
             'name': 'keywds',
-            'description': 'Input keywords such as { "col": "인천", "row": "치과" }',
+            'description': 'Input keywords such as { "col": "성남", "row": "치과", "content": {"keywdWorkType": "paste"} }',
             'in': 'body',
             'type': 'string',
             'required': 'true',
@@ -190,12 +207,10 @@ def keywdcheck():
             print('workType is None')
             keywd = f'{col}+{row}'
             posts1 = scrap_keywdcheck_v2(driver, keywd)
-
             time.sleep(uniform(2.0, 3.0))
 
             keywd = f'{col}{row}'
             posts2 = scrap_keywdcheck_v2(driver, keywd)
-        
         elif (workType == 'space'):
             print('workType is space')
             keywd = f'{col}+{row}'
