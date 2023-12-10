@@ -89,6 +89,12 @@ def scrap_keywdcheck_v2(driver, keywd):
         for post in list.find_elements(By.CSS_SELECTOR, '.title_link'):
             href = post.get_attribute('href')
             posts.append({'href': href})
+
+        # 스마트플레이스 수집 코드 추가.
+        smarts = driver.find_elements(By.CSS_SELECTOR, '.fds-ugc-block-mod')
+        for smart in smarts:
+            href = smart.get_attribute('href')
+            posts.append({'href': href})
         
         return posts
 
@@ -172,16 +178,37 @@ def keywdcheck():
 
         col = request.json.get('col')
         row = request.json.get('row')
+        content = request.json.get('content')
 
-        keywd = f'{col}+{row}'
-        posts1 = scrap_keywdcheck_v2(driver, keywd)
+        print(content['keywdWorkType'])
+        workType = content['keywdWorkType']
+        posts1 = []
+        posts2 = []
+        marge_posts = []
 
-        # time.sleep(uniform(1.0, 2.0))
+        if (workType is None):
+            print('workType is None')
+            keywd = f'{col}+{row}'
+            posts1 = scrap_keywdcheck_v2(driver, keywd)
 
-        keywd = f'{col}{row}'
-        posts2 = scrap_keywdcheck_v2(driver, keywd)
+            time.sleep(uniform(2.0, 3.0))
+
+            keywd = f'{col}{row}'
+            posts2 = scrap_keywdcheck_v2(driver, keywd)
+        
+        elif (workType == 'space'):
+            print('workType is space')
+            keywd = f'{col}+{row}'
+            posts1 = scrap_keywdcheck_v2(driver, keywd)
+
+        elif (workType == 'paste'):
+            print('workType is paste')
+            keywd = f'{col}{row}'
+            posts2 = scrap_keywdcheck_v2(driver, keywd)
+
+        time.sleep(uniform(2.0, 3.0))
+
         marge_posts = posts1 + posts2
-
         quit = driverQuit(driver)
 
         if (quit == False):
