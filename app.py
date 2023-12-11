@@ -104,8 +104,9 @@ def scrap_keywdcheck_v2(driver, keywd):
                 smart_blocks = driver.find_elements(By.CSS_SELECTOR, '.fds-ugc-block-mod')
                 for smart_block in smart_blocks:
                     try:
-                        smart_place = smart_block.find_element(By.CSS_SELECTOR, '.fds-comps-right-image-text-title-wrap')
-                        href = smart_place.get_attribute('href')
+                        container = smart_block.find_element(By.CSS_SELECTOR, '.fds-comps-right-image')
+                        link = container.find_element(By.CSS_SELECTOR, 'a')
+                        href = link.get_attribute('href')
                         posts.append({'href': href})
                     except Exception as e:
                         None
@@ -207,10 +208,12 @@ def keywdcheck():
             print('workType is None')
             keywd = f'{col}+{row}'
             posts1 = scrap_keywdcheck_v2(driver, keywd)
+            
             time.sleep(uniform(2.0, 3.0))
 
             keywd = f'{col}{row}'
             posts2 = scrap_keywdcheck_v2(driver, keywd)
+
         elif (workType == 'space'):
             print('workType is space')
             keywd = f'{col}+{row}'
