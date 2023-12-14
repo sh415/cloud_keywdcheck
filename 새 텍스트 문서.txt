@@ -17,9 +17,10 @@ sudo apt install ./google-chrome-stable_current_amd64.deb
 
 크롬 드라이버 : https://googlechromelabs.github.io/chrome-for-testing/#stable
 
-cd .. 상위 경로로 이동
+# 상위 경로로 이동
+cd ..
 
-# server-0 ~ 9
+# server-0~9
 sudo wget https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/118.0.5993.70/linux64/chromedriver-linux64.zip
 
 # server 11~13
@@ -33,22 +34,27 @@ sudo mv chromedriver /usr/bin/chromedriver
 
 ----------------------------------------------
 
+# 상위 경로로 이동
+cd ..
+
+cd cloud_keywdcheck
+
 sudo apt-get install git
 
 git clone https://github.com/sh415/cloud_keywdcheck.git
 
 git pull https://github.com/sh415/cloud_keywdcheck.git
 
-sudo apt-get install python3-pip
-
 ----------------------------------------------
 
-윈도우 명령어
+# 윈도우 명령어
 python -m pip install --upgrade pip
 python -m pip install --upgrade pip (관리자 권한으로 실행)
 python -m pip install --upgrade --user pip
 
 ----------------------------------------------
+
+sudo apt-get install python3-pip
 
 pip3 install flask
 
