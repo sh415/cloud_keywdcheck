@@ -24,7 +24,7 @@ class WebDriverManager:
         return len(self.drivers)
 
     def create_driver(self):
-        driver = driverInitTest()
+        driver = driverInit()
         self.drivers.append(driver)
 
         return driver
@@ -270,7 +270,6 @@ def keywdcheck():
 
         if (driver_count == 0):
             print('driver가 생성되지 않으면 새로 생성')
-            quit = driverQuit(driver)
             driver = manager.create_driver()
 
         elif (driver_count > 1):
