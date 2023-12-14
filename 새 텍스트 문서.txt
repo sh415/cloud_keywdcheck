@@ -19,7 +19,11 @@ sudo apt install ./google-chrome-stable_current_amd64.deb
 
 cd .. 상위 경로로 이동
 
+# server-0 ~ 9
 sudo wget https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/118.0.5993.70/linux64/chromedriver-linux64.zip
+
+# server 11~13
+sudo wget https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/120.0.6099.71/linux64/chromedriver-linux64.zip
 
 sudo unzip chromedriver-linux64.zip
 
