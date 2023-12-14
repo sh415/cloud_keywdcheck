@@ -16,6 +16,25 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import WebDriverException
 from webdriver_manager.chrome import ChromeDriverManager
 
+class WebDriverManager:
+    def __init__(self):
+        self.drivers = []
+
+    def count_drivers(self):
+        return len(self.drivers)
+
+    def create_driver(self):
+        driver = driverInitTest()
+        self.drivers.append(driver)
+
+        return driver
+
+    def close_driver(self, driver):
+        driver.quit()
+        self.drivers.remove(driver)
+
+manager = WebDriverManager() 
+
 app = Flask(__name__)
 api = Api(app)
 CORS(app)
@@ -58,6 +77,26 @@ swagger = Swagger(app, config=swagger_config)
 #     except Exception as e:
 #         print('scrap_keywdcheck error', e)
 #         return False
+
+def driverInitTest():
+    try:
+        options = webdriver.ChromeOptions()
+        # options.add_argument('headless')
+        # options.add_argument("no-sandbox")
+        # options.add_argument('window-size=1920x1080')
+        # options.add_argument("disable-gpu")
+        # options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        operaitor = platform.system()
+        if (operaitor == 'Windows'):
+            driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+        elif (operaitor == 'Linux'):
+            driver = webdriver.Chrome(options=options)
+
+        return driver
+
+    except Exception as e:
+        print('driverInit error', e)
+        return False
 
 def driverInit():
     try:
@@ -132,6 +171,7 @@ def driverQuit(driver):
 def index():
     return 'cloud_keywdcheck_server'
 
+# 응답 api
 @app.route('/responses', methods=['POST'])
 @swag_from({
     'responses': {
@@ -159,6 +199,41 @@ def server_responses():
     except Exception as e:
         return { 'message': False, 'error': str(e) }, 500
 
+# 테스트 api
+@app.route('/test', methods=['POST'])
+@swag_from({
+    'responses': {
+        200: {
+            'description': 'Successful response',
+            'examples': {
+                'application/json': {'message': True}
+            }
+        },
+        500: {
+            'description': 'Error response',
+            'examples': {
+                'application/json': {'message': False, 'error': 'Error message'}
+            }
+        }
+    }
+})
+def test_responses():
+    try:    
+        driver_count = manager.count_drivers()
+        if (driver_count == 0):
+            print('driver가 생성되지 않아 새로 생성.')
+            driver = manager.create_driver()
+
+        else:
+            print('driver가 이미 생성됨.')
+            driver = manager.drivers[0]
+        
+        return { 'message': True }, 200
+    
+    except Exception as e:
+        return { 'message': False, 'error': str(e) }, 500
+
+# 키워드 체크 api
 @app.route("/keywdcheck", methods=["POST"])
 @swag_from({
     'tags': ['Keywd Check'],
@@ -189,7 +264,30 @@ def server_responses():
 })
 def keywdcheck():
     try:
-        driver = driverInit()
+        # driver = driverInit()
+
+        driver_count = manager.count_drivers()
+
+        if (driver_count == 0):
+            print('driver가 생성되지 않으면 새로 생성')
+            quit = driverQuit(driver)
+            driver = manager.create_driver()
+
+        elif (driver_count > 1):
+            print('driver생성 초과')
+
+            for d in manager.drivers:
+                d.quit()
+                print('driver를 닫는 중...')
+                time.sleep(1.0)
+            
+            driver = manager.create_driver()
+            print('driver생성')
+
+        
+        else: # driver가 이미 생성됨
+            print('driver가 이미 생성됨')
+            driver = manager.drivers[0]
 
         if (driver == False):
             return { 'message': False, 'error': 'driverInit error', 'code': 1 }, 500
@@ -198,7 +296,6 @@ def keywdcheck():
         row = request.json.get('row')
         content = request.json.get('content')
 
-        print(content['keywdWorkType'])
         workType = content['keywdWorkType']
         posts1 = []
         posts2 = []
@@ -224,13 +321,11 @@ def keywdcheck():
             keywd = f'{col}{row}'
             posts2 = scrap_keywdcheck_v2(driver, keywd)
 
-        time.sleep(uniform(2.0, 3.0))
-
         marge_posts = posts1 + posts2
-        quit = driverQuit(driver)
 
-        if (quit == False):
-             return { 'message': False, 'error': 'driverQuit error', 'code': 2 }, 500
+        # quit = driverQuit(driver)
+        # if (quit == False):
+        #      return { 'message': False, 'error': 'driverQuit error', 'code': 2 }, 500
     
         if (len(marge_posts) == 0):
             return { 'message': True, 'posts': marge_posts, 'code': 3 }, 200
