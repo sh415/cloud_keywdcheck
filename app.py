@@ -265,29 +265,12 @@ def test_responses():
 def keywdcheck():
     try:
         # driver = driverInit()
-
         driver_count = manager.count_drivers()
 
         if (driver_count == 0):
             print('driver가 생성되지 않으면 새로 생성')
             driver = manager.create_driver()
-
-        elif (driver_count > 1):
-            print('driver생성 초과')
-
-            for d in manager.drivers:
-                d.quit()
-                print('driver를 닫는 중...')
-                time.sleep(1.0)
-            
-            driver = manager.create_driver()
-            print('driver생성')
-
         
-        else: # driver가 이미 생성됨
-            print('driver가 이미 생성됨')
-            driver = manager.drivers[0]
-
         if (driver == False):
             return { 'message': False, 'error': 'driverInit error', 'code': 1 }, 500
 
@@ -322,9 +305,9 @@ def keywdcheck():
 
         marge_posts = posts1 + posts2
 
-        # quit = driverQuit(driver)
-        # if (quit == False):
-        #      return { 'message': False, 'error': 'driverQuit error', 'code': 2 }, 500
+        quit = driverQuit(driver)
+        if (quit == False):
+             return { 'message': False, 'error': 'driverQuit error', 'code': 2 }, 500
     
         if (len(marge_posts) == 0):
             return { 'message': True, 'posts': marge_posts, 'code': 3 }, 200

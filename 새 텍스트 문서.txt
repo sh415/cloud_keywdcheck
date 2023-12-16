@@ -1,9 +1,9 @@
 
-공인ip 포트포워딩 : 네이버 클라우드 플랫폼 > ACG 설정 추가
+# 공인ip 포트포워딩 : 네이버 클라우드 플랫폼 > ACG 설정 추가
 
 ----------------------------------------------
 
-크롬 설치 :
+# 크롬 설치 
 
 sudo apt update
 
@@ -11,11 +11,13 @@ wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 
 sudo apt install ./google-chrome-stable_current_amd64.deb
 
-버전 확인 : google-chrome --version
+# 버전 확인
+google-chrome --version
 
 ----------------------------------------------
 
-크롬 드라이버 : https://googlechromelabs.github.io/chrome-for-testing/#stable
+# 크롬 드라이버
+https://googlechromelabs.github.io/chrome-for-testing/#stable
 
 # 상위 경로로 이동
 cd ..
@@ -37,8 +39,6 @@ sudo mv chromedriver /usr/bin/chromedriver
 # 상위 경로로 이동
 cd ..
 
-cd cloud_keywdcheck
-
 sudo apt-get install git
 
 git clone https://github.com/sh415/cloud_keywdcheck.git
@@ -48,6 +48,7 @@ git pull https://github.com/sh415/cloud_keywdcheck.git
 ----------------------------------------------
 
 # 윈도우 명령어
+
 python -m pip install --upgrade pip
 python -m pip install --upgrade pip (관리자 권한으로 실행)
 python -m pip install --upgrade --user pip
