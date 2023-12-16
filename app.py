@@ -121,9 +121,7 @@ def driverInit():
 def scrap_keywdcheck_v2(driver, keywd):
     try:
         driver.get(f'https://m.search.naver.com/search.naver?sm=mtp_hty.top&where=m&query={keywd}')
-        # time.sleep(uniform(1.0, 2.0))
-
-        driver.implicitly_wait(10)
+        time.sleep(uniform(1.0, 2.0))
 
         posts = []
 
@@ -267,8 +265,8 @@ def keywdcheck():
             print('driver가 생성되지 않으면 새로 생성')
             driver = manager.create_driver()
         
-        if (driver == False):
-            return { 'message': False, 'error': 'driverInit error', 'code': 1 }, 500
+        # if (driver == False):
+        #     return { 'message': False, 'error': 'driverInit error', 'code': 1 }, 500
 
         col = request.json.get('col')
         row = request.json.get('row')
