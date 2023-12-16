@@ -121,7 +121,9 @@ def driverInit():
 def scrap_keywdcheck_v2(driver, keywd):
     try:
         driver.get(f'https://m.search.naver.com/search.naver?sm=mtp_hty.top&where=m&query={keywd}')
-        time.sleep(uniform(1.0, 2.0))
+        # time.sleep(uniform(1.0, 2.0))
+
+        driver.implicitly_wait(10)
 
         posts = []
 
@@ -138,21 +140,15 @@ def scrap_keywdcheck_v2(driver, keywd):
         # 스마트블록 영역 수집
         if (len(posts) == 0):
             print('스마트블록 영역을 탐색한다.')
-
-            try:
-                smart_blocks = driver.find_elements(By.CSS_SELECTOR, '.fds-ugc-block-mod')
-                for smart_block in smart_blocks:
-                    try:
-                        container = smart_block.find_element(By.CSS_SELECTOR, '.fds-comps-right-image')
-                        link = container.find_element(By.CSS_SELECTOR, 'a')
-                        href = link.get_attribute('href')
-                        posts.append({'href': href})
-                    except Exception as e:
-                        None
-
-            except Exception as e:
-                print('스마트블록 영역 수집 실패', e)
-        
+            smart_blocks = driver.find_elements(By.CSS_SELECTOR, '.fds-ugc-block-mod')
+            for smart_block in smart_blocks:
+                try:
+                    container = smart_block.find_element(By.CSS_SELECTOR, '.fds-comps-right-image')
+                    link = container.find_element(By.CSS_SELECTOR, 'a')
+                    href = link.get_attribute('href')
+                    posts.append({'href': href})
+                except Exception as e:
+                    None        
         return posts
 
     except Exception as e:
