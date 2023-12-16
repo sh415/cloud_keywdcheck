@@ -258,12 +258,12 @@ def test_responses():
 })
 def keywdcheck():
     try:
-        # driver = driverInit()
-        driver_count = manager.count_drivers()
+        driver = driverInit()
+        # driver_count = manager.count_drivers()
 
-        if (driver_count == 0):
-            print('driver가 생성되지 않으면 새로 생성')
-            driver = manager.create_driver()
+        # if (driver_count == 0):
+        #     print('driver가 생성되지 않으면 새로 생성')
+        #     driver = manager.create_driver()
         
         # if (driver == False):
         #     return { 'message': False, 'error': 'driverInit error', 'code': 1 }, 500
