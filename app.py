@@ -136,7 +136,7 @@ def scrap_keywdcheck_v2(driver, keywd):
             print('VIEW 영역 수집 실패', e)
 
         # 스마트블록 영역 수집
-        if (len(posts) == 0):
+        try:
             print('스마트블록 영역을 탐색한다.')
             smart_blocks = driver.find_elements(By.CSS_SELECTOR, '.fds-ugc-block-mod')
             for smart_block in smart_blocks:
@@ -146,7 +146,34 @@ def scrap_keywdcheck_v2(driver, keywd):
                     href = link.get_attribute('href')
                     posts.append({'href': href})
                 except Exception as e:
-                    None        
+                    None
+        except Exception as e:
+            print('스마트블록 영역 수집 실패', e)
+
+        return posts
+
+    except Exception as e:
+        print('scrap_keywdcheck error', e)
+        return []
+
+def scrap_keywdcheck_local(driver, keywd):
+    try:
+        posts = []
+        
+        # VIEW 전체보기 상위노출 영역 수집
+        try:
+            print('VIEW 전체보기 영역을 탐색한다.')
+            driver.get(f'https://m.search.naver.com/search.naver?where=m_view&sm=mtb_jum&query={keywd}')
+            time.sleep(uniform(1.0, 2.0))
+
+            list = driver.find_element(By.CSS_SELECTOR, '.lst_view')
+            for post in list.find_elements(By.CSS_SELECTOR, '.title_link'):
+                href = post.get_attribute('href')
+                posts.append({'href': href})
+
+        except Exception as e:
+            print('VIEW 전체보기 영역 수집 실패', e)
+
         return posts
 
     except Exception as e:
@@ -310,6 +337,57 @@ def keywdcheck():
 
     except Exception as e:
         return { 'message': False, 'error': 'Exception error', 'code': 5 }, 500
+
+# 지역 키워드 체크 api
+@app.route("/keywdcheck/local", methods=["POST"])
+@swag_from({
+    'tags': ['Keywd Check'],
+    'description': 'Scrap keywords from Naver',
+    'parameters': [
+        {
+            'name': 'keywds',
+            'description': 'Input keywords such as { "col": "동천동 치과" }',
+            'in': 'body',
+            'type': 'string',
+            'required': 'true',
+        }
+    ],
+    'responses': {
+        200: {
+            'description': 'Successful response',
+            'examples': {
+                'application/json': [{'href': 'example_url_1'}, {'href': 'example_url_2'}]
+            }
+        },
+        500: {
+            'description': 'Error response',
+            'examples': {
+                'application/json': {'message': False, 'error': 'Error message'}
+            }
+        }
+    }
+})
+def keywdchecklocal():
+    try:
+        driver = driverInit()
+
+        col = request.json.get('col')
+        posts = []
+        keywd = f'{col}'
+        posts = scrap_keywdcheck_local(driver, keywd)
+
+        quit = driverQuit(driver)
+        if (quit == False):
+             return { 'message': False, 'error': 'driverQuit error', 'code': 2 }, 500
+    
+        if (len(posts) == 0):
+            return { 'message': True, 'posts': posts, 'code': 3 }, 200
+        else:
+            return { 'message': True, 'posts': posts, 'code': 4 }, 200
+
+    except Exception as e:
+        return { 'message': False, 'error': 'Exception error', 'code': 5 }, 500
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=False)
